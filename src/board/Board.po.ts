@@ -1,7 +1,7 @@
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from '@testing-library/react';
 
 export class BoardPageObject {
-  get container() {
+  get element() {
     return screen.getByTestId(/board/i);
   }
   get noWinnerArea(): HTMLElement | null {
@@ -22,31 +22,22 @@ export class BoardPageObject {
   get resetButton(): HTMLElement {
     return screen.getByTestId(/btn-reset/i);
   }
-  get square1() {
-    return screen.getByTestId(/square1/i);
+  get colInput(): HTMLInputElement{
+    return screen.getByTestId(/colInput/i);
   }
-  get square2() {
-    return screen.getByTestId(/square2/i);
+  get rowInput(): HTMLInputElement {
+    return screen.getByTestId(/rowInput/i);
   }
-  get square3() {
-    return screen.getByTestId(/square3/i);
+  get squares(): HTMLCollectionOf<Element> {
+    return this.element.getElementsByClassName('square-item');
   }
-  get square4() {
-    return screen.getByTestId(/square4/i);
+
+  setMatrix(rows: number, columns: number){
+    fireEvent.change(this.colInput, {target: {value: columns }})
+    fireEvent.change(this.rowInput, {target: {value: rows }})
   }
-  get square5() {
-    return screen.getByTestId(/square5/i);
-  }
-  get square6() {
-    return screen.getByTestId(/square6/i);
-  }
-  get square7() {
-    return screen.getByTestId(/square7/i);
-  }
-  get square8() {
-    return screen.getByTestId(/square8/i);
-  }
-  get square9() {
-    return screen.getByTestId(/square9/i);
+
+  play(cellNumber: number){
+    fireEvent.click(this.squares[cellNumber-1]);
   }
 }
