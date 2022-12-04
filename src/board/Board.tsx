@@ -137,7 +137,7 @@ export function Board() {
             <span
               data-testid="winner-symbol"
               className={`ml-2 text-2xl font-extrabold ${
-                isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'
+                !isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'
               }`}
             >
               {!isFirstPlayer ? 'X' : 'O'}
