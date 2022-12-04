@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# React Multi-matrix Tic-Tac-Toe 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+My attempt to implement a multi-matrix tic-tac-toe.
+
+[Demo](https://multi-matrix-tictactoe.netlify.app)
 
 ## Available Scripts
 
