@@ -122,19 +122,14 @@ export function Board() {
       !isHumanSecPlayer &&
       rows * columns !== playState.player1Hits.length + playState.player2Hits.length
     ) {
-      computerMove(
+      const move = computerMove(
         structureState.possibleWins,
         playState.player1Hits,
         playState.player2Hits,
         rows,
         columns,
       )
-        .then((move) => {
-          squareHit(move)
-        })
-        .catch((error) => {
-          console.error('error', error)
-        })
+      squareHit(move)
     }
   }, [playState, structureState])
 
@@ -202,6 +197,7 @@ export function Board() {
               </label>
               <div className='bg-slate-100 py-1 px-2 flex gap-2'>
                 <button
+                  data-testid='btnHumanSecondPlayer'
                   className={
                     PlayerButtonClass + (isHumanSecPlayer ? 'bg-yellow-50' : 'bg-gray-200')
                   }
@@ -212,6 +208,7 @@ export function Board() {
                   ></ManIcon>
                 </button>
                 <button
+                  data-testid='btnComputerSecondPlayer'
                   className={
                     PlayerButtonClass + (!isHumanSecPlayer ? 'bg-yellow-50' : 'bg-gray-200')
                   }

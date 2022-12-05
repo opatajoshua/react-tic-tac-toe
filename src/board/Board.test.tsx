@@ -24,7 +24,8 @@ it('renders correct square alternating content', () => {
   render(<Board />);
   const board = new BoardPageObject();
 
-  board.setMatrix(4, 4)
+  board.setMatrix(4, 4);
+  board.playSetSecondPlayerType('person');
 
   board.play(1);
   expect(board.squares[0]).toHaveTextContent('X');
@@ -42,6 +43,7 @@ it('renders correct square alternating content', () => {
 it('wins horizontal', () => {
   render(<Board />);
   const board = new BoardPageObject();
+  board.playSetSecondPlayerType('person');
   /**
    * O O
    * X X X
@@ -58,14 +60,14 @@ it('wins horizontal', () => {
 
   // expecting win
   expect(board.winnerArea).toBeInTheDocument();
-  // expecting player X to be the winner
-  assert(board.winnerSymbol);
-  expect(board.winnerSymbol.innerHTML).toEqual('X');
+  // expecting player 1 to be the winner
+  expect(board.winnerArea).toHaveTextContent('Player 1');
 });
 
 it('wins vertically', () => {
   render(<Board />);
   const board = new BoardPageObject();
+  board.playSetSecondPlayerType('person');
   /**
    * O X X
    * O X
@@ -83,13 +85,13 @@ it('wins vertically', () => {
   // expecting win
   expect(board.winnerArea).toBeInTheDocument();
   // expecting player O to be the winner
-  assert(board.winnerSymbol);
-  expect(board.winnerSymbol.innerHTML).toEqual('O');
+  expect(board.winnerArea).toHaveTextContent('Player 2');
 });
 
 it('wins diagonal to the left', () => {
   render(<Board />);
   const board = new BoardPageObject();
+  board.playSetSecondPlayerType('person');
   /**
    * X X O
    *   O
@@ -107,13 +109,13 @@ it('wins diagonal to the left', () => {
   // expecting win
   expect(board.winnerArea).toBeInTheDocument();
   // expecting player O to be the winner
-  assert(board.winnerSymbol);
-  expect(board.winnerSymbol.innerHTML).toEqual('O');
+  expect(board.winnerArea).toHaveTextContent('Player 2');
 });
 
 it('wins diagonal to the right', () => {
   render(<Board />);
   const board = new BoardPageObject();
+  board.playSetSecondPlayerType('person');
   /**
    * X   O
    *   X
@@ -130,13 +132,13 @@ it('wins diagonal to the right', () => {
   // expecting win
   expect(board.winnerArea).toBeInTheDocument();
   // expecting player O to be the winner
-  assert(board.winnerSymbol);
-  expect(board.winnerSymbol.innerHTML).toEqual('X');
+  expect(board.winnerArea).toHaveTextContent('Player 1');
 });
 
 it('no winner', () => {
   render(<Board />);
   const board = new BoardPageObject();
+  board.playSetSecondPlayerType('person');
   /**
    * X O X
    * X O X
@@ -161,6 +163,7 @@ it('no winner', () => {
 it('reset button resets', () => {
   render(<Board />);
   const board = new BoardPageObject();
+  board.playSetSecondPlayerType('person');
   board.play(4);
   board.play(1);
   board.play(5);

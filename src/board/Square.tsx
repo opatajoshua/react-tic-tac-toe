@@ -13,7 +13,7 @@ export function Square(
     <button
     {...props}
       className={
-        ' flex-1 rounded-md flex justify-center ' +
+        ' flex-1 rounded-md flex justify-center enabled:hover:bg-gray-300 ' +
         props.className +
         (props.owner
           ? props.owner === 1
