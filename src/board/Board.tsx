@@ -21,6 +21,10 @@ interface PlayState {
   won: boolean
   started: boolean
   completedButNoWin: boolean
+  scores: {
+    player1: number
+    player2: number
+  }
 }
 
 const initialPlayState = {
@@ -31,6 +35,10 @@ const initialPlayState = {
   won: false,
   started: false,
   completedButNoWin: false,
+  scores: {
+    player1: 0,
+    player2: 0,
+  },
 }
 
 const PlayerButtonClass = 'flex-1 flex justify-center p-1 rounded-full h-10 items-center '
@@ -95,6 +103,8 @@ export function Board() {
             spread: 70,
             origin: { y: 0.6 },
           })
+          if (isFirstPlayer) newPlayState.scores.player1++
+          else newPlayState.scores.player2++
         }
       }
 
@@ -110,7 +120,7 @@ export function Board() {
         isFirstPlayer: !isFirstPlayer,
       })
     },
-    [structureState, playState, isHumanSecPlayer],
+    [structureState, playState],
   )
 
   const { isFirstPlayer, won, hitOwners, started, completedButNoWin } = playState
@@ -118,7 +128,7 @@ export function Board() {
   // play computer
   useEffect(() => {
     if (
-      !isFirstPlayer &&
+      !playState.isFirstPlayer &&
       !isHumanSecPlayer &&
       rows * columns !== playState.player1Hits.length + playState.player2Hits.length
     ) {
@@ -128,11 +138,11 @@ export function Board() {
         playState.player2Hits,
         rows,
         columns,
-        true
+        true,
       )
       squareHit(move)
     }
-  }, [playState, structureState])
+  }, [columns, isHumanSecPlayer, playState, rows, squareHit, structureState])
 
   return (
     <div data-testid='board' className='flex flex-col items-center'>
@@ -148,7 +158,11 @@ export function Board() {
         ) : won ? (
           <div data-testid='winnerArea' id='winnerArea' className='winner flex items-center'>
             <span className='mr-2'>🎉</span>
-            <span className={`mr-2 font-bold ${!isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'}`}>{!isFirstPlayer? 'Player 1': (!isHumanSecPlayer? 'Computer': ' Player 2')} Wins</span>
+            <span
+              className={`mr-2 font-bold ${!isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'}`}
+            >
+              {!isFirstPlayer ? 'Player 1' : !isHumanSecPlayer ? 'Computer' : ' Player 2'} Wins
+            </span>
           </div>
         ) : (
           <div data-testid='statusArea' id='statusArea' className='status flex items-center'>
@@ -202,7 +216,10 @@ export function Board() {
                   className={
                     PlayerButtonClass + (isHumanSecPlayer ? 'bg-yellow-50' : 'bg-gray-200')
                   }
-                  onClick={() => changeIsHumanSecPlayer(true)}
+                  onClick={() => {
+                    changeIsHumanSecPlayer(true),
+                      setPlayState({ ...playState, scores: initialPlayState.scores })
+                  }}
                 >
                   <ManIcon
                     className={isHumanSecPlayer ? 'fill-yellow-600' : 'fill-gray-400'}
@@ -213,7 +230,10 @@ export function Board() {
                   className={
                     PlayerButtonClass + (!isHumanSecPlayer ? 'bg-yellow-50' : 'bg-gray-200')
                   }
-                  onClick={() => changeIsHumanSecPlayer(false)}
+                  onClick={() => {
+                    changeIsHumanSecPlayer(false),
+                      setPlayState({ ...playState, scores: initialPlayState.scores })
+                  }}
                 >
                   <AndroidIcon
                     className={!isHumanSecPlayer ? 'fill-yellow-600' : 'fill-gray-400'}
@@ -226,7 +246,7 @@ export function Board() {
           <button
             data-testid='btn-reset'
             className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-            onClick={() => setPlayState(initialPlayState)}
+            onClick={() => setPlayState({ ...initialPlayState, scores: playState.scores })}
           >
             Reset
           </button>
@@ -241,7 +261,7 @@ export function Board() {
                 {squareColumns.map((r, columnIndex) => {
                   const cellIndex = rowIndex * columns + columnIndex
                   return (
-                    <td key={cellIndex} className="p-2">
+                    <td key={cellIndex} className='p-2'>
                       <Square
                         className='square-item py-3 px-3 md:p-5 text-lg font-black min-w-0 w-full '
                         data-testid={`square${cellIndex + 1}`}
@@ -260,8 +280,9 @@ export function Board() {
           </tbody>
         </table>
       </div>
-      {started && (
-        <div className='flex gap-2 mt-4'>
+      {(started || playState.scores.player1 || playState.scores.player2)? 
+        <div className='flex gap-3 mt-4 items-center'>
+          <p className='text-lg font-black text-teal-500'>{playState.scores.player1}</p>
           <ManIcon className={isFirstPlayer ? 'fill-teal-500' : 'fill-gray-400'}></ManIcon>
           <b className='text-gray-500'>VS</b>
 
@@ -272,8 +293,10 @@ export function Board() {
               className={!isFirstPlayer ? 'fill-yellow-600' : 'fill-gray-400'}
             ></AndroidIcon>
           )}
-        </div>
-      )}
+          <p className='text-lg font-black text-yellow-600'>{playState.scores.player2}</p>
+        </div>:
+        <></>
+      }
     </div>
   )
 }
