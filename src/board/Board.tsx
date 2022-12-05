@@ -36,8 +36,8 @@ const initialPlayState = {
 const PlayerButtonClass = 'flex-1 flex justify-center p-1 rounded-full h-10 items-center '
 
 export function Board() {
-  const [rows, setRows] = useState(4)
-  const [columns, setColumns] = useState(4)
+  const [rows, setRows] = useState(3)
+  const [columns, setColumns] = useState(3)
   const [playState, setPlayState] = useState<PlayState>(initialPlayState)
   const [isHumanSecPlayer, changeIsHumanSecPlayer] = useState(false)
 
@@ -140,8 +140,8 @@ export function Board() {
     <div data-testid='board' className='flex flex-col items-center'>
       <div className='text-lg'>
         {completedButNoWin ? (
-          <div data-testid='noWinnerArea' id='noWinnerArea' className='no-winner flex items-center'>
-            No winner
+          <div data-testid='noWinnerArea' id='noWinnerArea' className='no-winner flex items-center font-medium text-red-900'>
+          🚫  No winner
           </div>
         ) : won ? (
           <div data-testid='winnerArea' id='winnerArea' className='winner flex items-center'>
