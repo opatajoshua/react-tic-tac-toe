@@ -1,3 +1,4 @@
+import intersection from 'lodash/intersection'
 import difference from 'lodash/difference'
 /**
  * find row for a number
@@ -98,60 +99,76 @@ export function computerMove(
   computerPlays: number[],
   rows: number,
   columns: number,
-): Promise<number> {
-  return new Promise((resolve) => {
-    const minExpectedPlayForWin = Math.min(rows, columns)
-    const remainingPlays = difference(Array.from(Array((rows * columns)-1).keys()).map(i=>i+1), [
-      ...humanPlays,
-      ...computerPlays,
-    ])
+): number {
+  const minExpectedPlayForWin = Math.min(rows, columns)
+  const remainingPlays = difference(
+    Array.from(Array(rows * columns - 1).keys()).map((i) => i + 1),
+    [...humanPlays, ...computerPlays],
+  )
 
-    // defensive
-    let defensiveMoves: number[] = [];
-    if (humanPlays.length >= Math.ceil(minExpectedPlayForWin / 2)) {
-      // only possible wins computer didnt destroy
-      const _possibleWins = possibleWins.filter(
-        (p) => difference(p, computerPlays).length === p.length,
-      )
-      const predictHumanMove = _possibleWins.sort(
-        (a, b) => difference(humanPlays, a).length - difference(humanPlays, b).length,
-      )[0]
-      if (predictHumanMove) {
-        defensiveMoves = difference(predictHumanMove, humanPlays)
-      }
-    }
+  // defensive
+  let defensiveMoves: number[] = []
+  if (humanPlays.length >= Math.ceil(minExpectedPlayForWin / 2)) {
+    // only possible wins computer didnt destroy
+    const _possibleWins = possibleWins.filter(
+      (p) => difference(p, computerPlays).length === p.length,
+    )
 
-    // offensive
-    let offensiveMoves: number[] = [];
-    if (computerPlays.length) {
-      // only possible wins human didnt destroy
-      const _possibleWins = possibleWins.filter(
-        (p) => difference(p, humanPlays).length === p.length,
+    const predictedHumanMove = _possibleWins.sort(
+      (a, b) =>
+        // sort by percentages played to a possible win
+        percentage(intersection(humanPlays, b).length, b.length) -
+        percentage(intersection(humanPlays, a).length, a.length),
+    )[0]
+
+    if (predictedHumanMove) {
+      defensiveMoves = difference(predictedHumanMove, humanPlays)
+    }
+  }
+
+  // offensive
+  let offensiveMoves: number[] = []
+  if (computerPlays.length) {
+    // only possible wins human didnt destroy
+    const _possibleWins = possibleWins.filter((p) => difference(p, humanPlays).length === p.length)
+    const predictMyMove = _possibleWins.sort(
+      (a, b) => difference(computerPlays, a).length - difference(computerPlays, b).length,
+    )[0]
+    if (predictMyMove) {
+      offensiveMoves = difference(predictMyMove, computerPlays)
+    }
+  }
+
+  if (defensiveMoves.length || offensiveMoves.length) {
+    const moves =
+      (defensiveMoves.length && defensiveMoves.length < offensiveMoves.length) || !offensiveMoves
+        ? defensiveMoves
+        : offensiveMoves
+    const bestMove = moves[randomIntFromInterval(0, moves.length - 1)]
+
+    if (bestMove) {
+      console.log(
+        defensiveMoves.length && defensiveMoves.length < offensiveMoves.length
+          ? 'defensive'
+          : 'offensive',
       )
-      const predictMyMove = _possibleWins.sort(
-        (a, b) => difference(computerPlays, a).length - difference(computerPlays, b).length,
-      )[0]
-      if (predictMyMove) {
-        offensiveMoves = difference(predictMyMove, computerPlays)
-      }
+      return bestMove
     }
-    if(defensiveMoves.length || offensiveMoves.length){
-      const moves = defensiveMoves.length && defensiveMoves.length < offensiveMoves.length? defensiveMoves: offensiveMoves;
-      const bestMove = moves[randomIntFromInterval(0, moves.length-1)];
-      if(bestMove){
-        console.log(defensiveMoves.length && defensiveMoves.length < offensiveMoves.length? 'defensive': 'offensive')
-        resolve(bestMove);
-        return;
-      }
-    }
-  
-    // random
-    console.log('random')
-    // console.log('random', {remainingPlays})
-    resolve(remainingPlays[randomIntFromInterval(0, remainingPlays.length-1)])
+  }
+
+  // random
+  const randomIndex = randomIntFromInterval(0, remainingPlays.length - 1)
+  console.log('random', {
+    remainingPlays,
+    randomIndex,
   })
+  return remainingPlays[randomIndex]
 }
 
 function randomIntFromInterval(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function percentage(partialValue: number, totalValue: number) {
+  return (100 * partialValue) / totalValue
 }
