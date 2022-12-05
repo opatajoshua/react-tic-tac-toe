@@ -99,10 +99,11 @@ export function computerMove(
   computerPlays: number[],
   rows: number,
   columns: number,
+  showStrategyLogs = false,
 ): number {
   const minExpectedPlayForWin = Math.min(rows, columns)
   const remainingPlays = difference(
-    Array.from(Array(rows * columns - 1).keys()).map((i) => i + 1),
+    Array.from(Array(rows * columns).keys()).map((i) => i + 1),
     [...humanPlays, ...computerPlays],
   )
 
@@ -141,27 +142,27 @@ export function computerMove(
 
   if (defensiveMoves.length || offensiveMoves.length) {
     const moves =
-      (defensiveMoves.length && defensiveMoves.length < offensiveMoves.length) || !offensiveMoves
+      (defensiveMoves.length && defensiveMoves.length < offensiveMoves.length) ||
+      !offensiveMoves.length
         ? defensiveMoves
         : offensiveMoves
     const bestMove = moves[randomIntFromInterval(0, moves.length - 1)]
 
     if (bestMove) {
-      console.log(
-        defensiveMoves.length && defensiveMoves.length < offensiveMoves.length
-          ? 'defensive'
-          : 'offensive',
-      )
+      if (showStrategyLogs)
+        console.log(
+          defensiveMoves.length && defensiveMoves.length < offensiveMoves.length
+            ? 'defensive'
+            : 'offensive',
+          // { defensiveMoves, offensiveMoves },
+        )
       return bestMove
     }
   }
 
   // random
   const randomIndex = randomIntFromInterval(0, remainingPlays.length - 1)
-  console.log('random', {
-    remainingPlays,
-    randomIndex,
-  })
+  if (showStrategyLogs) console.log('random')
   return remainingPlays[randomIndex]
 }
 

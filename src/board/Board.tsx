@@ -128,6 +128,7 @@ export function Board() {
         playState.player2Hits,
         rows,
         columns,
+        true
       )
       squareHit(move)
     }
