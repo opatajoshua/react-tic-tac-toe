@@ -119,6 +119,7 @@ export function computerMove(
         const remainingHumanMoves = difference(predictHumanMove, humanPlays)
         const chosenMove = remainingHumanMoves[randomIntFromInterval(0, remainingHumanMoves.length - 1)];
         resolve(chosenMove)
+        console.log('defensive')
         // console.log('defensive', {
         //   humanPlays,
         //   computerPlays,
@@ -130,6 +131,7 @@ export function computerMove(
         return
       }
     }
+
     // offensive
     if (computerPlays.length) {
       // only possible wins human didnt destroy
@@ -142,6 +144,7 @@ export function computerMove(
       if (predictMyMove) {
         const myRemainingMoves = difference(predictMyMove, computerPlays)
         resolve(myRemainingMoves[randomIntFromInterval(0, myRemainingMoves.length - 1)])
+        console.log('offensive')
         // console.log('offensive', {
         //   humanPlays,
         //   predictMyMove,
@@ -151,9 +154,11 @@ export function computerMove(
         return
       }
     }
+  
     // random
+    console.log('random')
     // console.log('random', {remainingPlays})
-    resolve(remainingPlays[randomIntFromInterval(0, remainingPlays.length)])
+    resolve(remainingPlays[randomIntFromInterval(0, remainingPlays.length-1)])
   })
 }
 

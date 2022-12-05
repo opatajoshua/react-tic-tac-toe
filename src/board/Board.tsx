@@ -65,7 +65,7 @@ export function Board() {
         playState.player1Hits.indexOf(numb) !== -1 ||
         playState.player2Hits.indexOf(numb) !== -1 ||
         playState.won
-      ){
+      ) {
         return
       }
 
@@ -128,32 +128,31 @@ export function Board() {
         playState.player2Hits,
         rows,
         columns,
-      ).then((move) => {
-        squareHit(move)
-      }).catch(error=>{
-        console.error('error', error);
-      })
+      )
+        .then((move) => {
+          squareHit(move)
+        })
+        .catch((error) => {
+          console.error('error', error)
+        })
     }
-  }, [ playState, structureState])
+  }, [playState, structureState])
 
   return (
     <div data-testid='board' className='flex flex-col items-center'>
       <div className='text-lg'>
         {completedButNoWin ? (
-          <div data-testid='noWinnerArea' id='noWinnerArea' className='no-winner flex items-center font-medium text-red-900'>
-          🚫  No winner
+          <div
+            data-testid='noWinnerArea'
+            id='noWinnerArea'
+            className='no-winner flex items-center font-medium text-red-900'
+          >
+            🚫 No winner
           </div>
         ) : won ? (
           <div data-testid='winnerArea' id='winnerArea' className='winner flex items-center'>
-            Winner:{' '}
-            <span
-              data-testid='winner-symbol'
-              className={`ml-2 text-2xl font-extrabold ${
-                !isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'
-              }`}
-            >
-              {!isFirstPlayer ? 'X' : 'O'}
-            </span>
+            <span className='mr-2'>🎉</span>
+            <span className={`mr-2 font-bold ${!isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'}`}>{!isFirstPlayer? 'Player 1': (!isHumanSecPlayer? 'Computer': ' Player 2')} Wins</span>
           </div>
         ) : (
           <div data-testid='statusArea' id='statusArea' className='status flex items-center'>
@@ -263,6 +262,20 @@ export function Board() {
           </tbody>
         </table>
       </div>
+      {started && (
+        <div className='flex gap-2 mt-4'>
+          <ManIcon className={isFirstPlayer ? 'fill-teal-500' : 'fill-gray-400'}></ManIcon>
+          <b className='text-gray-500'>VS</b>
+
+          {isHumanSecPlayer ? (
+            <ManIcon className={!isFirstPlayer ? 'fill-yellow-600' : 'fill-gray-400'}></ManIcon>
+          ) : (
+            <AndroidIcon
+              className={!isFirstPlayer ? 'fill-yellow-600' : 'fill-gray-400'}
+            ></AndroidIcon>
+          )}
+        </div>
+      )}
     </div>
   )
 }
