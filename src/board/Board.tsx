@@ -202,7 +202,7 @@ export function Board() {
         )}
       </div>
 
-      <div className='flex gap-4 mt-3'>
+      <div className='flex gap-4 mt-3 mb-3'>
         {!started ? (
           <>
             <div className='w-20'>
@@ -266,17 +266,22 @@ export function Board() {
             </div>
           </>
         ) : (
-          <button
-            data-testid='btn-reset'
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-            onClick={() => setPlayState({ ...initialPlayState, scores: playState.scores })}
-          >
-            Reset
-          </button>
+          <div className='flex flex-col items-center'>
+            <button
+              data-testid='btn-reset'
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+              onClick={() => setPlayState({ ...initialPlayState, scores: playState.scores })}
+            >
+              Reset
+            </button>
+            <p className='mt-3 text-gray-700 text-sm'>
+              Match at least <b>{structureState.minExpectedHits}</b> cells touching sides
+            </p>
+          </div>
         )}
       </div>
 
-      <div className='bg-slate-100 flex flex-col items-center mt-5 w-11/12 h-11/12  md:w-fit lg:h-fit md:max-w-screen-2xl mx-auto p-3 border-2 rounded overflow-x-auto'>
+      <div className='bg-slate-100 flex flex-col items-center mt-0 w-11/12 h-11/12  md:w-fit lg:h-fit md:max-w-screen-2xl mx-auto p-3 border-2 rounded overflow-x-auto'>
         <table className='w-full'>
           <tbody>
             {squareRows.map((rowIndex) => (

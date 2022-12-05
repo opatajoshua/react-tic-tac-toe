@@ -101,6 +101,7 @@ export function computerMove(
   rows: number,
   columns: number,
   showStrategyLogs = false,
+  difficultyLevel: 'difficult' |'easy' = 'difficult'
 ): number {
   const { possibleWins, possibleDiagonalToLeftWins, possibleDiagonalToRightWins } = structureState
   const minExpectedPlayForWin = Math.min(rows, columns)
@@ -113,7 +114,7 @@ export function computerMove(
   let defensiveMoves: number[] = []
   if (humanPlays.length >= Math.ceil(minExpectedPlayForWin / 2) || !computerPlays.length) {
     // only possible wins computer didnt destroy
-    const _possibleWins = !computerPlays.length
+    const _possibleWins = (!computerPlays.length && difficultyLevel === 'difficult')
       ? [...possibleDiagonalToLeftWins, ...possibleDiagonalToRightWins]
       : possibleWins.filter((p) => difference(p, computerPlays).length === p.length)
 
