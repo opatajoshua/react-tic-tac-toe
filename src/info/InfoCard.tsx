@@ -15,9 +15,10 @@ export function InfoCard(props: ComponentProps<'div'>) {
       <p className="text-gray-600">
         My attempt to implement a multi-matrix tic-tac-toe.
       </p>
+      <p className='text-sm mt-1 text-gray-600'>You can check console for the strategy computer opponent played</p>
       <a
         href="https://github.com/opatajoshua/react-tic-tac-toe"
-        className="text-blue-700"
+        className="text-blue-700 mt-1"
         target="_blank" rel="noreferrer"
       >
         ‍👨‍💻 link to code on github
