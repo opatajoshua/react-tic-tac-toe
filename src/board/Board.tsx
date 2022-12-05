@@ -218,7 +218,7 @@ export function Board() {
                   }
                   onClick={() => {
                     changeIsHumanSecPlayer(true),
-                      setPlayState({ ...playState, scores: initialPlayState.scores })
+                      setPlayState({ ...playState, scores: {...initialPlayState.scores} })
                   }}
                 >
                   <ManIcon
@@ -232,7 +232,7 @@ export function Board() {
                   }
                   onClick={() => {
                     changeIsHumanSecPlayer(false),
-                      setPlayState({ ...playState, scores: initialPlayState.scores })
+                      setPlayState({ ...playState, scores: {...initialPlayState.scores} })
                   }}
                 >
                   <AndroidIcon
