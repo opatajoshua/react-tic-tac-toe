@@ -7,10 +7,11 @@ export function Square(
     owner: SquareOwner;
     'data-testid': string;
     number?: number;
-  } & ComponentProps<'div'>
+  } & ComponentProps<'button'>
 ) {
   return (
-    <div
+    <button
+    {...props}
       className={
         ' flex-1 rounded-md flex justify-center ' +
         props.className +
@@ -18,7 +19,7 @@ export function Square(
           ? props.owner === 1
             ? ' bg-teal-200 text-teal-700'
             : ' bg-yellow-200 text-yellow-700'
-          : ' bg-gray-200 text-gray-200 cursor-pointer')
+          : ' bg-gray-200 text-gray-200')
       }
       onClick={props.onClick}
       data-testid={props['data-testid']}
@@ -37,6 +38,6 @@ export function Square(
       </span>
       &nbsp;
       {/* <span className="text-red-400">{props.number}</span> */}
-    </div>
+    </button>
   );
 }

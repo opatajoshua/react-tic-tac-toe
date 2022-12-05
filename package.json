@@ -15,6 +15,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "jest-canvas-mock": "^2.4.0",
+    "lodash": "^4.17.21",
     "prettier": "^2.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.0",
+    "@types/lodash": "^4.14.191",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.29.0",
