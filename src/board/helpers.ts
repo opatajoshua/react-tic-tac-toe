@@ -138,9 +138,11 @@ export function computerMove(
     if(defensiveMoves.length || offensiveMoves.length){
       const moves = defensiveMoves.length && defensiveMoves.length < offensiveMoves.length? defensiveMoves: offensiveMoves;
       const bestMove = moves[randomIntFromInterval(0, moves.length-1)];
-      console.log(defensiveMoves.length && defensiveMoves.length < offensiveMoves.length? 'defensive': 'offensive')
-      resolve(bestMove);
-      return;
+      if(bestMove){
+        console.log(defensiveMoves.length && defensiveMoves.length < offensiveMoves.length? 'defensive': 'offensive')
+        resolve(bestMove);
+        return;
+      }
     }
   
     // random
