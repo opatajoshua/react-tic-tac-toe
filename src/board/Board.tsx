@@ -42,14 +42,14 @@ const initialPlayState = {
 }
 
 export interface StructureState {
-  rows: number;
-  columns: number;
-  minExpectedHits: number;
-  possibleHorizontalWins: number[][];
-  possibleVerticalWins: number[][];
-  possibleDiagonalToLeftWins: number[][];
-  possibleDiagonalToRightWins: number[][];
-  possibleWins: number[][];
+  rows: number
+  columns: number
+  minExpectedHits: number
+  possibleHorizontalWins: number[][]
+  possibleVerticalWins: number[][]
+  possibleDiagonalToLeftWins: number[][]
+  possibleDiagonalToRightWins: number[][]
+  possibleWins: number[][]
 }
 
 const PlayerButtonClass = 'flex-1 flex justify-center p-1 rounded-full h-10 items-center '
@@ -57,17 +57,20 @@ const PlayerButtonClass = 'flex-1 flex justify-center p-1 rounded-full h-10 item
 export function Board() {
   const [rows, setRows] = useState(3)
   const [columns, setColumns] = useState(3)
-  const [playState, setPlayState] = useState<PlayState>(initialPlayState)
+  const [playState, setPlayState] = useState<PlayState>({
+    ...initialPlayState,
+    scores: { ...initialPlayState.scores },
+  })
   const [isHumanSecPlayer, changeIsHumanSecPlayer] = useState(false)
 
   const squareRows = useMemo(() => Array.from(Array(rows).keys()), [rows])
   const squareColumns = useMemo(() => Array.from(Array(columns).keys()), [columns])
 
   const structureState: StructureState = useMemo(() => {
-    const _possibleHorizontalWins = possibleHorizontalWins(rows, columns);
-    const _possibleVerticalWins = possibleVerticalWins(rows, columns);
-    const _possibleDiagonalToLeftWins = possibleDiagonalToLeftWins(rows, columns);
-    const _possibleDiagonalToRightWins = possibleDiagonalToRightWins(rows, columns);
+    const _possibleHorizontalWins = possibleHorizontalWins(rows, columns)
+    const _possibleVerticalWins = possibleVerticalWins(rows, columns)
+    const _possibleDiagonalToLeftWins = possibleDiagonalToLeftWins(rows, columns)
+    const _possibleDiagonalToRightWins = possibleDiagonalToRightWins(rows, columns)
 
     return {
       rows,
@@ -238,7 +241,7 @@ export function Board() {
                   }
                   onClick={() => {
                     changeIsHumanSecPlayer(true),
-                      setPlayState({ ...playState, scores: {...initialPlayState.scores} })
+                      setPlayState({ ...playState, scores: { ...initialPlayState.scores } })
                   }}
                 >
                   <ManIcon
@@ -252,7 +255,7 @@ export function Board() {
                   }
                   onClick={() => {
                     changeIsHumanSecPlayer(false),
-                      setPlayState({ ...playState, scores: {...initialPlayState.scores} })
+                      setPlayState({ ...playState, scores: { ...initialPlayState.scores } })
                   }}
                 >
                   <AndroidIcon
@@ -300,7 +303,7 @@ export function Board() {
           </tbody>
         </table>
       </div>
-      {(started || playState.scores.player1 || playState.scores.player2)? 
+      {started || playState.scores.player1 || playState.scores.player2 ? (
         <div className='flex gap-3 mt-4 items-center'>
           <p className='text-lg font-black text-teal-500'>{playState.scores.player1}</p>
           <ManIcon className={isFirstPlayer ? 'fill-teal-500' : 'fill-gray-400'}></ManIcon>
@@ -314,9 +317,10 @@ export function Board() {
             ></AndroidIcon>
           )}
           <p className='text-lg font-black text-yellow-600'>{playState.scores.player2}</p>
-        </div>:
+        </div>
+      ) : (
         <></>
-      }
+      )}
     </div>
   )
 }
