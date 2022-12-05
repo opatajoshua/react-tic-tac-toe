@@ -35,6 +35,9 @@ export function InfoCard(props: ComponentProps<'div'>) {
         <a href="https://twitter.com/JOLk22" target="_blank" rel="noreferrer">
           <img src="imgs/twitter.png" alt="" className="w-8" />
         </a>
+        <a href="https://joshuaopata.com" target="_blank" rel="noreferrer">
+          <img src="imgs/web.png" alt="" className="w-8" />
+        </a>
       </div>
     </div>
   );
