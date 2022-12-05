@@ -107,6 +107,7 @@ export function computerMove(
     ])
 
     // defensive
+    let defensiveMoves: number[] = [];
     if (humanPlays.length >= Math.ceil(minExpectedPlayForWin / 2)) {
       // only possible wins computer didnt destroy
       const _possibleWins = possibleWins.filter(
@@ -116,23 +117,12 @@ export function computerMove(
         (a, b) => difference(humanPlays, a).length - difference(humanPlays, b).length,
       )[0]
       if (predictHumanMove) {
-        const remainingHumanMoves = difference(predictHumanMove, humanPlays)
-        const chosenMove = remainingHumanMoves[randomIntFromInterval(0, remainingHumanMoves.length - 1)];
-        resolve(chosenMove)
-        console.log('defensive')
-        // console.log('defensive', {
-        //   humanPlays,
-        //   computerPlays,
-        //   predictHumanMove,
-        //   remainingHumanMoves,
-        //   _possibleWins,
-        //   chosenMove
-        // })
-        return
+        defensiveMoves = difference(predictHumanMove, humanPlays)
       }
     }
 
     // offensive
+    let offensiveMoves: number[] = [];
     if (computerPlays.length) {
       // only possible wins human didnt destroy
       const _possibleWins = possibleWins.filter(
@@ -142,17 +132,15 @@ export function computerMove(
         (a, b) => difference(computerPlays, a).length - difference(computerPlays, b).length,
       )[0]
       if (predictMyMove) {
-        const myRemainingMoves = difference(predictMyMove, computerPlays)
-        resolve(myRemainingMoves[randomIntFromInterval(0, myRemainingMoves.length - 1)])
-        console.log('offensive')
-        // console.log('offensive', {
-        //   humanPlays,
-        //   predictMyMove,
-        //   myRemainingMoves,
-        //   _possibleWins,
-        // })
-        return
+        offensiveMoves = difference(predictMyMove, computerPlays)
       }
+    }
+    if(defensiveMoves.length || offensiveMoves.length){
+      const moves = defensiveMoves.length && defensiveMoves.length < offensiveMoves.length? defensiveMoves: offensiveMoves;
+      const bestMove = moves[randomIntFromInterval(0, moves.length-1)];
+      console.log(defensiveMoves.length && defensiveMoves.length < offensiveMoves.length? 'defensive': 'offensive')
+      resolve(bestMove);
+      return;
     }
   
     // random
