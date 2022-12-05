@@ -157,47 +157,64 @@ it('winCheck finds the correct match of plays from possible wins', () => {
 })
 
 it('computer play works', () => {
+  const rows =  3;
+  const columns =  5;
+  const possibleHorizontalWins =  [
+    [1, 2, 3, 4, 5],
+    [6, 7, 8, 9, 10],
+    [11, 12, 13, 14, 15],
+  ];
+  const possibleVerticalWins =  [
+    [1, 6, 11],
+    [2, 7, 12],
+    [3, 8, 13],
+    [4, 9, 14],
+    [5, 10, 15],
+  ];
+  const possibleDiagonalToLeftWins =  [
+    [5, 9, 13],
+    [4, 8, 12],
+    [3, 7, 11],
+  ];
+  const possibleDiagonalToRightWins =  [
+    [1, 7, 13],
+    [2, 8, 14],
+    [3, 9, 15],
+  ];
+
+  const structureState = {
+    rows,
+    columns,
+    minExpectedHits: Math.min(rows, columns),
+    possibleHorizontalWins: possibleHorizontalWins,
+    possibleVerticalWins: possibleVerticalWins,
+    possibleDiagonalToLeftWins: possibleDiagonalToLeftWins,
+    possibleDiagonalToRightWins: possibleDiagonalToRightWins,
+    possibleWins: [
+      ...possibleHorizontalWins,
+      ...possibleVerticalWins,
+      ...possibleDiagonalToLeftWins,
+      ...possibleDiagonalToRightWins,
+    ],
+  }
+
+  const humanPlays= [1, 2];
+  const computerPlays= [7];
+  const expectedDefensiveMoves= [3, 4, 5];
+
   // expecting a defensive play
   const bestMove = computerMove(
-    [
-      [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      [10, 11, 12, 13, 14, 15, 16, 17, 18],
-      [19, 20, 21, 22, 23, 24, 25, 26, 27],
-      [1, 10, 19],
-      [2, 11, 20],
-      [3, 12, 21],
-      [4, 13, 22],
-      [5, 14, 23],
-      [6, 15, 24],
-      [7, 16, 25],
-      [8, 17, 26],
-      [9, 18, 27],
-      [9, 17, 25],
-      [8, 16, 24],
-      [7, 15, 23],
-      [6, 14, 22],
-      [5, 13, 21],
-      [4, 12, 20],
-      [3, 11, 19],
-      [1, 11, 21],
-      [2, 12, 22],
-      [3, 13, 23],
-      [4, 14, 24],
-      [5, 15, 25],
-      [6, 16, 26],
-      [7, 17, 27],
-    ], // possible wins
-    [1, 10, 2, 11, 3], // human plays and intends to achieve [1, 10, 19], [2, 11, 20],
-    [7, 19, 23, 22], // computer plays
-    3, // number of rows
-    9, // number of columns
+    structureState, // possible wins
+    humanPlays, // human plays,
+    computerPlays, // computer plays
+    rows, // number of rows
+    columns, // number of columns
   )
 
-  /** user played [1, 10, 2, 11, 3]
-   * so user next will be playing
-   *  19 to win [1, 10, 19]
-   *  or 20 to win [2, 11, 20]
-   */
-  // so computer need to play a defensive of 19 or 20
-  expect([19, 20]).toContain(bestMove)
+  // /** user played [1, 2]
+  //  * so user next will be playing
+  //  *  3, 4, 5 to win
+  //  */
+  // // so computer need to play a defensive of 19 or 20
+  expect(expectedDefensiveMoves).toContain(bestMove)
 })

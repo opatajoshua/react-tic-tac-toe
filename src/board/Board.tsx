@@ -41,6 +41,17 @@ const initialPlayState = {
   },
 }
 
+export interface StructureState {
+  rows: number;
+  columns: number;
+  minExpectedHits: number;
+  possibleHorizontalWins: number[][];
+  possibleVerticalWins: number[][];
+  possibleDiagonalToLeftWins: number[][];
+  possibleDiagonalToRightWins: number[][];
+  possibleWins: number[][];
+}
+
 const PlayerButtonClass = 'flex-1 flex justify-center p-1 rounded-full h-10 items-center '
 
 export function Board() {
@@ -52,16 +63,25 @@ export function Board() {
   const squareRows = useMemo(() => Array.from(Array(rows).keys()), [rows])
   const squareColumns = useMemo(() => Array.from(Array(columns).keys()), [columns])
 
-  const structureState = useMemo(() => {
+  const structureState: StructureState = useMemo(() => {
+    const _possibleHorizontalWins = possibleHorizontalWins(rows, columns);
+    const _possibleVerticalWins = possibleVerticalWins(rows, columns);
+    const _possibleDiagonalToLeftWins = possibleDiagonalToLeftWins(rows, columns);
+    const _possibleDiagonalToRightWins = possibleDiagonalToRightWins(rows, columns);
+
     return {
       rows,
       columns,
       minExpectedHits: Math.min(rows, columns),
+      possibleHorizontalWins: _possibleHorizontalWins,
+      possibleVerticalWins: _possibleVerticalWins,
+      possibleDiagonalToLeftWins: _possibleDiagonalToLeftWins,
+      possibleDiagonalToRightWins: _possibleDiagonalToRightWins,
       possibleWins: [
-        ...possibleHorizontalWins(rows, columns),
-        ...possibleVerticalWins(rows, columns),
-        ...possibleDiagonalToLeftWins(rows, columns),
-        ...possibleDiagonalToRightWins(rows, columns),
+        ..._possibleHorizontalWins,
+        ..._possibleVerticalWins,
+        ..._possibleDiagonalToLeftWins,
+        ..._possibleDiagonalToRightWins,
       ],
     }
   }, [rows, columns])
@@ -133,7 +153,7 @@ export function Board() {
       rows * columns !== playState.player1Hits.length + playState.player2Hits.length
     ) {
       const move = computerMove(
-        structureState.possibleWins,
+        structureState,
         playState.player1Hits,
         playState.player2Hits,
         rows,

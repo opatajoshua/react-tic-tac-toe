@@ -1,5 +1,6 @@
 import intersection from 'lodash/intersection'
 import difference from 'lodash/difference'
+import { StructureState } from './Board'
 /**
  * find row for a number
  */
@@ -94,13 +95,14 @@ export function winCheck(possibleWins: number[][], hitsUnsorted: number[]): bool
  * @returns
  */
 export function computerMove(
-  possibleWins: number[][],
+  structureState: StructureState,
   humanPlays: number[],
   computerPlays: number[],
   rows: number,
   columns: number,
   showStrategyLogs = false,
 ): number {
+  const { possibleWins, possibleDiagonalToLeftWins, possibleDiagonalToRightWins } = structureState
   const minExpectedPlayForWin = Math.min(rows, columns)
   const remainingPlays = difference(
     Array.from(Array(rows * columns).keys()).map((i) => i + 1),
@@ -109,11 +111,11 @@ export function computerMove(
 
   // defensive
   let defensiveMoves: number[] = []
-  if (humanPlays.length >= Math.ceil(minExpectedPlayForWin / 2)) {
+  if (humanPlays.length >= Math.ceil(minExpectedPlayForWin / 2) || !computerPlays.length) {
     // only possible wins computer didnt destroy
-    const _possibleWins = possibleWins.filter(
-      (p) => difference(p, computerPlays).length === p.length,
-    )
+    const _possibleWins = !computerPlays.length
+      ? [...possibleDiagonalToLeftWins, ...possibleDiagonalToRightWins]
+      : possibleWins.filter((p) => difference(p, computerPlays).length === p.length)
 
     const predictedHumanMove = _possibleWins.sort(
       (a, b) =>
