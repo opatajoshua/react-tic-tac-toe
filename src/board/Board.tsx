@@ -241,9 +241,9 @@ export function Board() {
                 {squareColumns.map((r, columnIndex) => {
                   const cellIndex = rowIndex * columns + columnIndex
                   return (
-                    <td key={cellIndex}>
+                    <td key={cellIndex} className="p-2">
                       <Square
-                        className='square-item py-3 px-3 md:p-5 text-lg font-black min-w-0 m-1 '
+                        className='square-item py-3 px-3 md:p-5 text-lg font-black min-w-0 w-full '
                         data-testid={`square${cellIndex + 1}`}
                         onClick={() => squareHit(cellIndex + 1)}
                         owner={hitOwners[cellIndex + 1]}
