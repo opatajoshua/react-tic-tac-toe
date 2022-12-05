@@ -90,7 +90,7 @@ export function winCheck(possibleWins: number[][], hitsUnsorted: number[]): bool
  * get the next from for an computer play
  * @param possibleWins
  * @param humanPlays
- * @param androidPlays
+ * @param computerPlays
  * @returns
  */
 export function computerMove(
