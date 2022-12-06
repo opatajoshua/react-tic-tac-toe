@@ -160,7 +160,7 @@ it('no winner', () => {
   expect(board.noWinnerArea).toBeInTheDocument();
 });
 
-it('reset button resets', () => {
+it('go again button resets', () => {
   render(<Board />);
   const board = new BoardPageObject();
   board.playSetSecondPlayerType('person');
@@ -169,14 +169,16 @@ it('reset button resets', () => {
   board.play(5);
   board.play(2);
   board.play(6);
+  board.play(2);
+  // player two wins
 
   fireEvent.click(board.resetButton);
   // expecting squares to be empty again
   expect(board.squares[0]).not.toHaveTextContent('X');
   expect(board.squares[0]).not.toHaveTextContent('O');
-  // expecting next player to be X again
+  // expecting next starting player should be O (player 2)
   assert(board.nextPlayerSymbol);
-  expect(board.nextPlayerSymbol.innerHTML).toEqual('X');
+  expect(board.nextPlayerSymbol.innerHTML).toEqual('O');
   // no winner area should be hidden
   expect(board.noWinnerArea).not.toBeInTheDocument();
   // winner area should be hidden

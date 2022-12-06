@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="">
       <div className="mt-6">
-        <Board />
+        <Board randomizeStartingPlayer={true}/>
       </div>
       <InfoCard  className="mt-32 mb-20"/>
       <MadeWithLove className="fixed bottom-0 right-0 px-4 pb-2 bg-white"/>

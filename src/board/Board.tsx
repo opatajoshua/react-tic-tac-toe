@@ -17,7 +17,8 @@ interface PlayState {
   player1Hits: number[]
   player2Hits: number[]
   hitOwners: Record<number, SquareOwner>
-  isFirstPlayer: boolean
+  playerOneIsPlaying: boolean
+  playerOneIsStartingPlayer: boolean
   won: boolean
   started: boolean
   completedButNoWin: boolean
@@ -27,11 +28,14 @@ interface PlayState {
   }
 }
 
+const playerOneShouldStart = Math.random() < 0.5
+
 const initialPlayState = {
   player1Hits: [],
   player2Hits: [],
   hitOwners: {},
-  isFirstPlayer: true,
+  playerOneIsPlaying: playerOneShouldStart,
+  playerOneIsStartingPlayer: playerOneShouldStart,
   won: false,
   started: false,
   completedButNoWin: false,
@@ -54,12 +58,14 @@ export interface StructureState {
 
 const PlayerButtonClass = 'flex-1 flex justify-center p-1 rounded-full h-10 items-center '
 
-export function Board() {
+export function Board(props: { randomizeStartingPlayer?: boolean } = { randomizeStartingPlayer: false }) {
   const [rows, setRows] = useState(3)
   const [columns, setColumns] = useState(3)
   const [playState, setPlayState] = useState<PlayState>({
     ...initialPlayState,
     scores: { ...initialPlayState.scores },
+    playerOneIsPlaying: props.randomizeStartingPlayer? playerOneShouldStart: true,
+    playerOneIsStartingPlayer: props.randomizeStartingPlayer? playerOneShouldStart: true,
   })
   const [isHumanSecPlayer, changeIsHumanSecPlayer] = useState(false)
 
@@ -102,22 +108,22 @@ export function Board() {
 
       const newPlayState: PlayState = { ...playState, started: true }
 
-      if (playState.isFirstPlayer) {
+      if (playState.playerOneIsPlaying) {
         newPlayState.player1Hits = [...playState.player1Hits, numb]
       } else {
         newPlayState.player2Hits = [...playState.player2Hits, numb]
       }
 
-      const { isFirstPlayer, hitOwners, player1Hits, player2Hits } = newPlayState
+      const { playerOneIsPlaying, hitOwners, player1Hits, player2Hits } = newPlayState
       const { possibleWins, minExpectedHits } = structureState
 
       // if last hit
       if (
-        (isFirstPlayer && player1Hits.length >= minExpectedHits) ||
-        (!isFirstPlayer && player2Hits.length >= minExpectedHits)
+        (playerOneIsPlaying && player1Hits.length >= minExpectedHits) ||
+        (!playerOneIsPlaying && player2Hits.length >= minExpectedHits)
       ) {
         newPlayState.won = winCheck(possibleWins, [
-          ...(isFirstPlayer ? player1Hits : player2Hits),
+          ...(playerOneIsPlaying ? player1Hits : player2Hits),
           numb,
         ])
         if (newPlayState.won) {
@@ -126,7 +132,7 @@ export function Board() {
             spread: 70,
             origin: { y: 0.6 },
           })
-          if (isFirstPlayer) newPlayState.scores.player1++
+          if (playerOneIsPlaying) newPlayState.scores.player1++
           else newPlayState.scores.player2++
         }
       }
@@ -139,19 +145,19 @@ export function Board() {
 
       setPlayState({
         ...newPlayState,
-        hitOwners: { ...hitOwners, [numb]: isFirstPlayer ? 1 : 2 },
-        isFirstPlayer: !isFirstPlayer,
+        hitOwners: { ...hitOwners, [numb]: playerOneIsPlaying ? 1 : 2 },
+        playerOneIsPlaying: !playerOneIsPlaying,
       })
     },
     [structureState, playState],
   )
 
-  const { isFirstPlayer, won, hitOwners, started, completedButNoWin } = playState
+  const { playerOneIsPlaying, won, hitOwners, started, completedButNoWin } = playState
 
   // play computer
   useEffect(() => {
     if (
-      !playState.isFirstPlayer &&
+      !playState.playerOneIsPlaying &&
       !isHumanSecPlayer &&
       rows * columns !== playState.player1Hits.length + playState.player2Hits.length
     ) {
@@ -166,6 +172,8 @@ export function Board() {
       squareHit(move)
     }
   }, [columns, isHumanSecPlayer, playState, rows, squareHit, structureState])
+
+  const playerTwoName = useMemo(() => !isHumanSecPlayer ? 'Computer' : ' Player 2', [isHumanSecPlayer])
 
   return (
     <div data-testid='board' className='flex flex-col items-center'>
@@ -182,22 +190,26 @@ export function Board() {
           <div data-testid='winnerArea' id='winnerArea' className='winner flex items-center'>
             <span className='mr-2'>🎉</span>
             <span
-              className={`mr-2 font-bold ${!isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'}`}
+              className={`mr-2 font-bold ${
+                !playerOneIsPlaying ? 'text-teal-700' : 'text-yellow-600'
+              }`}
             >
-              {!isFirstPlayer ? 'Player 1' : !isHumanSecPlayer ? 'Computer' : ' Player 2'} Wins
+              {!playerOneIsPlaying ? 'Player 1' : playerTwoName} Wins
             </span>
           </div>
         ) : (
           <div data-testid='statusArea' id='statusArea' className='status flex items-center'>
-            Next player:
+
+            {playerOneIsPlaying ?'Player 1':playerTwoName}
             <span
               data-testid='next-player-symbol'
-              className={`ml-2 text-2xl font-extrabold ${
-                isFirstPlayer ? 'text-teal-700' : 'text-yellow-600'
+              className={`mx-2 text-2xl font-extrabold ${
+                playerOneIsPlaying ? 'text-teal-700' : 'text-yellow-600'
               }`}
             >
-              {isFirstPlayer ? 'X' : 'O'}
+              {playerOneIsPlaying ? 'X' : 'O'}
             </span>
+            is playing
           </div>
         )}
       </div>
@@ -267,13 +279,22 @@ export function Board() {
           </>
         ) : (
           <div className='flex flex-col items-center'>
-            <button
-              data-testid='btn-reset'
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-              onClick={() => setPlayState({ ...initialPlayState, scores: playState.scores })}
-            >
-              Reset
-            </button>
+            {(won || completedButNoWin) && (
+              <button
+                data-testid='btn-reset'
+                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                onClick={() => {
+                  setPlayState({
+                    ...initialPlayState,
+                    scores: playState.scores,
+                    playerOneIsPlaying: !playState.playerOneIsStartingPlayer,
+                    playerOneIsStartingPlayer: !playState.playerOneIsStartingPlayer,
+                  })
+                }}
+              >
+                Go again
+              </button>
+            )}
             <p className='mt-3 text-gray-700 text-sm'>
               Match at least <b>{structureState.minExpectedHits}</b> cells touching sides
             </p>
@@ -297,7 +318,9 @@ export function Board() {
                         owner={hitOwners[cellIndex + 1]}
                         number={cellIndex + 1}
                         disabled={
-                          !!hitOwners[cellIndex + 1] || won || (!isFirstPlayer && !isHumanSecPlayer)
+                          !!hitOwners[cellIndex + 1] ||
+                          won ||
+                          (!playerOneIsPlaying && !isHumanSecPlayer)
                         }
                       />
                     </td>
@@ -311,14 +334,16 @@ export function Board() {
       {started || playState.scores.player1 || playState.scores.player2 ? (
         <div className='flex gap-3 mt-4 items-center'>
           <p className='text-lg font-black text-teal-500'>{playState.scores.player1}</p>
-          <ManIcon className={isFirstPlayer ? 'fill-teal-500' : 'fill-gray-400'}></ManIcon>
+          <ManIcon className={playerOneIsPlaying ? 'fill-teal-500' : 'fill-gray-400'}></ManIcon>
           <b className='text-gray-500'>VS</b>
 
           {isHumanSecPlayer ? (
-            <ManIcon className={!isFirstPlayer ? 'fill-yellow-600' : 'fill-gray-400'}></ManIcon>
+            <ManIcon
+              className={!playerOneIsPlaying ? 'fill-yellow-600' : 'fill-gray-400'}
+            ></ManIcon>
           ) : (
             <AndroidIcon
-              className={!isFirstPlayer ? 'fill-yellow-600' : 'fill-gray-400'}
+              className={!playerOneIsPlaying ? 'fill-yellow-600' : 'fill-gray-400'}
             ></AndroidIcon>
           )}
           <p className='text-lg font-black text-yellow-600'>{playState.scores.player2}</p>
