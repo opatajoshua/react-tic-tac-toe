@@ -25,7 +25,7 @@ it('renders correct square alternating content', () => {
   const board = new BoardPageObject();
 
   board.setMatrix(4, 4);
-  board.playSetSecondPlayerType('person');
+  board.setSecondPlayerType('person');
 
   board.play(1);
   expect(board.squares[0]).toHaveTextContent('X');
@@ -43,7 +43,7 @@ it('renders correct square alternating content', () => {
 it('wins horizontal', () => {
   render(<Board />);
   const board = new BoardPageObject();
-  board.playSetSecondPlayerType('person');
+  board.setSecondPlayerType('person');
   /**
    * O O
    * X X X
@@ -67,7 +67,7 @@ it('wins horizontal', () => {
 it('wins vertically', () => {
   render(<Board />);
   const board = new BoardPageObject();
-  board.playSetSecondPlayerType('person');
+  board.setSecondPlayerType('person');
   /**
    * O X X
    * O X
@@ -91,7 +91,7 @@ it('wins vertically', () => {
 it('wins diagonal to the left', () => {
   render(<Board />);
   const board = new BoardPageObject();
-  board.playSetSecondPlayerType('person');
+  board.setSecondPlayerType('person');
   /**
    * X X O
    *   O
@@ -115,7 +115,7 @@ it('wins diagonal to the left', () => {
 it('wins diagonal to the right', () => {
   render(<Board />);
   const board = new BoardPageObject();
-  board.playSetSecondPlayerType('person');
+  board.setSecondPlayerType('person');
   /**
    * X   O
    *   X
@@ -138,7 +138,7 @@ it('wins diagonal to the right', () => {
 it('no winner', () => {
   render(<Board />);
   const board = new BoardPageObject();
-  board.playSetSecondPlayerType('person');
+  board.setSecondPlayerType('person');
   /**
    * X O X
    * X O X
@@ -163,7 +163,7 @@ it('no winner', () => {
 it('go again button resets', () => {
   render(<Board />);
   const board = new BoardPageObject();
-  board.playSetSecondPlayerType('person');
+  board.setSecondPlayerType('person');
   board.play(4);
   board.play(1);
   board.play(5);

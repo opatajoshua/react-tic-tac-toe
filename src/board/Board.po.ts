@@ -45,7 +45,7 @@ export class BoardPageObject {
     fireEvent.click(this.squares[cellNumber - 1])
   }
 
-  playSetSecondPlayerType(playerType: 'person' | 'computer') {
+  setSecondPlayerType(playerType: 'person' | 'computer') {
     fireEvent.click(
       playerType == 'computer' ? this.btnComputerSecondPlayer : this.btnHumanSecondPlayer,
     )

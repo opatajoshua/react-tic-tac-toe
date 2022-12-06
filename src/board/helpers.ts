@@ -78,7 +78,7 @@ export const compareWin = (possibleWin: number[], plays: number[]) =>
   possibleWin.every((v) => plays.includes(v))
 
 /**
- * check possible win for 3 numbers.
+ * check possible win for played numbers.
  * @param possibleWins
  * @param hitsUnsorted
  * @returns
@@ -88,7 +88,7 @@ export function winCheck(possibleWins: number[][], hitsUnsorted: number[]): bool
 }
 
 /**
- * get the next from for an computer play
+ * get the best number for computer to play
  * @param possibleWins
  * @param humanPlays
  * @param computerPlays
@@ -164,6 +164,7 @@ export function computerMove(
   }
 
   // random
+  // TODO: on difficult level, random should not be a corner
   const randomIndex = randomIntFromInterval(0, remainingPlays.length - 1)
   if (showStrategyLogs) console.log('random')
   return remainingPlays[randomIndex]
